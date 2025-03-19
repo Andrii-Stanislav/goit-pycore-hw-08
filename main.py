@@ -1,5 +1,17 @@
 from collections import UserDict
 from datetime import datetime, timedelta
+import pickle
+
+def save_data(book, filename="addressbook.pkl"):
+    with open(filename, "wb") as f:
+        pickle.dump(book, f)
+
+def load_data(filename="addressbook.pkl"):
+    try:
+        with open(filename, "rb") as f:
+            return pickle.load(f)
+    except FileNotFoundError:
+        return AddressBook()
 
 class ValidationException(Exception):
     pass
@@ -230,7 +242,8 @@ def parse_input(user_input):
     return cmd, args
 
 def main():
-    book = AddressBook()
+    filename="my_address_book.pkl"
+    book = load_data(filename)
     print("Welcome to the assistant bot!")
     while True:
         user_input = input("Enter a command: ")
@@ -261,6 +274,8 @@ def main():
             print(handle_birthdays(args, book))
         else:
             print("Invalid command.")
+
+    save_data(book, filename)
 
 if __name__ == "__main__":
     main()
